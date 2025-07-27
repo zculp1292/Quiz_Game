@@ -6,21 +6,58 @@ using TMPro;
 
 public class Quiz : MonoBehaviour
 {
+    [Header("Questions")]
     [SerializeField] QuestionSO question;
     [SerializeField] TextMeshProUGUI questionText;
+
+    [Header("Answers")]
     [SerializeField] GameObject[] answerButtons;
+
+    [Header("Button Colors")]
     [SerializeField] Sprite defaultAnswerSprite;
     [SerializeField] Sprite correctAnswerSprite;
 
-    int correctAnswerIndex;
+    [Header("Timer")]
+    [SerializeField] Image timerImage;
+    Timer timer;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    int correctAnswerIndex;
+    bool hasAnsweredEarly;
+
     void Start()
     {
+        timer = FindFirstObjectByType<Timer>();
         DisplayQuestion();
     }
 
+    void Update()
+    {
+        timerImage.fillAmount = timer.fillFraction;
+
+        if (timer.loadNextQuestion)
+        {
+            hasAnsweredEarly = false;
+            GetNextQuestion();
+            timer.loadNextQuestion = false;
+        }
+        else if (!hasAnsweredEarly && !timer.isAnsweringQuestion)
+        {
+            DisplayAnswer(-1);
+            SetButtonState(false);
+        }
+    }
+
     public void OnAnswerSelect(int index)
+    {
+        hasAnsweredEarly = true;
+        
+        DisplayAnswer(index);
+
+        SetButtonState(false);
+        timer.CancelTimer();
+    }
+
+    void DisplayAnswer(int index)
     {
         Image buttonImage;
         correctAnswerIndex = question.GetCorrectAnswerIndex();
@@ -28,7 +65,7 @@ public class Quiz : MonoBehaviour
         if (index == correctAnswerIndex)
         {
             questionText.text = "Correct!";
-            
+
             buttonImage = answerButtons[index].GetComponent<Image>();
             buttonImage.sprite = correctAnswerSprite;
         }
@@ -40,8 +77,6 @@ public class Quiz : MonoBehaviour
             buttonImage = answerButtons[correctAnswerIndex].GetComponent<Image>();
             buttonImage.sprite = correctAnswerSprite;
         }
-
-        SetButtonState(false);
     }
 
     void GetNextQuestion()
@@ -76,11 +111,5 @@ public class Quiz : MonoBehaviour
         {
             answerButtons[i].GetComponent<Image>().sprite = defaultAnswerSprite;
         }
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }
