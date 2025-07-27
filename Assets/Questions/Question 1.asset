@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d219d5f8e7a761418bb28e2d78d300e, type: 3}
   m_Name: Question 1
   m_EditorClassIdentifier: 
-  question: Which character should die next?
+  question: Who deserves to die next?
   answers:
-  - Wercus
-  - Vadonia
   - Aether
+  - Vadonia
+  - Wercus
   - Dyanara
   correctAnswerIndex: 0
