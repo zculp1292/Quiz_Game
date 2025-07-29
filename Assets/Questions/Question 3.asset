@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d219d5f8e7a761418bb28e2d78d300e, type: 3}
   m_Name: Question 3
   m_EditorClassIdentifier: 
-  question: Enter new question text here
+  question: Will Dyanara ever get to see her family?
   answers:
-  - 
-  - 
-  - 
-  - 
-  correctAnswerIndex: 0
+  - Yes, equal story-telling is important
+  - Maybe, who knows?
+  - No, sucks to suck
+  - They are all dead.
+  correctAnswerIndex: 1

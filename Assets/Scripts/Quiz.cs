@@ -7,8 +7,9 @@ using TMPro;
 public class Quiz : MonoBehaviour
 {
     [Header("Questions")]
-    [SerializeField] QuestionSO question;
+    QuestionSO currentQuestion;
     [SerializeField] TextMeshProUGUI questionText;
+    [SerializeField] List<QuestionSO> questions = new List<QuestionSO>();
 
     [Header("Answers")]
     [SerializeField] GameObject[] answerButtons;
@@ -21,12 +22,17 @@ public class Quiz : MonoBehaviour
     [SerializeField] Image timerImage;
     Timer timer;
 
+    [Header("Scoring")]
+    [SerializeField] TextMeshProUGUI scoreText;
+    ScoreKeeper scoreKeeper;
+
     int correctAnswerIndex;
     bool hasAnsweredEarly;
 
     void Start()
     {
         timer = FindFirstObjectByType<Timer>();
+        scoreKeeper = FindFirstObjectByType<ScoreKeeper>();
         DisplayQuestion();
     }
 
@@ -54,13 +60,14 @@ public class Quiz : MonoBehaviour
         DisplayAnswer(index);
 
         SetButtonState(false);
+        scoreText.text = "Score: " + scoreKeeper.CalculateScore() + "%";
         timer.CancelTimer();
     }
 
     void DisplayAnswer(int index)
     {
         Image buttonImage;
-        correctAnswerIndex = question.GetCorrectAnswerIndex();
+        correctAnswerIndex = currentQuestion.GetCorrectAnswerIndex();
 
         if (index == correctAnswerIndex)
         {
@@ -68,10 +75,11 @@ public class Quiz : MonoBehaviour
 
             buttonImage = answerButtons[index].GetComponent<Image>();
             buttonImage.sprite = correctAnswerSprite;
+            scoreKeeper.IncrementCorrectAnswers();
         }
         else
         {
-            string correctAnswer = question.GetAnswer(correctAnswerIndex);
+            string correctAnswer = currentQuestion.GetAnswer(correctAnswerIndex);
             questionText.text = "Sorry, the correct answer was\n" + correctAnswer;
 
             buttonImage = answerButtons[correctAnswerIndex].GetComponent<Image>();
@@ -81,19 +89,37 @@ public class Quiz : MonoBehaviour
 
     void GetNextQuestion()
     {
-        SetButtonState(true);
-        SetDefaultButtonSprites();
-        DisplayQuestion();
+        if (questions.Count > 0)
+        {
+            SetButtonState(true);
+            SetDefaultButtonSprites();
+
+            GetRandomQuestion();
+            scoreKeeper.IncrementQuestionsSeen();
+
+            DisplayQuestion();
+        }
+    }
+
+    void GetRandomQuestion()
+    {
+        int index = Random.Range(0, questions.Count);
+        currentQuestion = questions[index];
+
+        if (questions.Contains(currentQuestion))
+        {
+            questions.Remove(currentQuestion);
+        }
     }
 
     void DisplayQuestion()
     {
-        questionText.text = question.GetQuestion();
+        questionText.text = currentQuestion.GetQuestion();
 
         for (int i = 0; i < answerButtons.Length; i++)
         {
             TextMeshProUGUI buttonText = answerButtons[i].GetComponentInChildren<TextMeshProUGUI>();
-            buttonText.text = question.GetAnswer(i);
+            buttonText.text = currentQuestion.GetAnswer(i);
         }
     }
 

@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d219d5f8e7a761418bb28e2d78d300e, type: 3}
   m_Name: Question 2
   m_EditorClassIdentifier: 
-  question: Enter new question text here
+  question: Did Vadonia deserve to die?
   answers:
-  - 
-  - 
-  - 
-  - 
-  correctAnswerIndex: 0
+  - Yes
+  - No
+  - Should have been Aether
+  - Fuck them trees!
+  correctAnswerIndex: 2
